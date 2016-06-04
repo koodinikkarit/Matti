@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+message MattiRequest {
+	uint32 ticket = 1;
+	oneof requestMessage {
+		VideoConnection videoConnection = 2;
+		KwmConnection kwmConnection = 3;
+		RequestValue requestValue = 4;
+	}
+	uint32 type = 5;
+}
+
+message MattiResponse {
+	uint32 ticket = 1;
+	oneof requestMessage {
+		VideoConnection videoConnection = 2;
+		KwmConnection kwmConnection = 3;
+		VideoConnections videoConnections = 4;
+		KwmConnections kwmConnections = 5;	
+	}
+}
+
+message KwmConnection {
+	uint32 cpu = 1;
+	uint32 con = 2;
+}
+
+message KwmConnections {
+    repeated KwmConnection kwmConnection = 1;
+}
+
+message VideoConnection {
+	uint32 cpu = 1;
+	uint32 con = 2;
+}
+
+message VideoConnections {
+    repeated VideoConnection videoConnection = 1;
+}
+
+message RequestValue {
+	uint32 values = 1;
+}
