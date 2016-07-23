@@ -5,9 +5,9 @@ message MattiRequest {
 	oneof requestMessage {
 		VideoConnection videoConnection = 2;
 		KwmConnection kwmConnection = 3;
-		RequestValue requestValue = 4;
+		MatrixStates matrixStates = 4;
+		RequestValue requestValue = 5;
 	}
-	uint32 type = 5;
 }
 
 message MattiResponse {
@@ -40,4 +40,9 @@ message VideoConnections {
 
 message RequestValue {
 	uint32 values = 1;
+}
+
+message MatrixStates {
+	repeated VideoConnection videoConnection = 1;
+	repeated KwmConnection kwmConnection = 2;
 }
