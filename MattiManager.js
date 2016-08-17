@@ -175,6 +175,40 @@ module.exports = function(sqlAddress, database, user) {
 		});
 	}
 
+	that.isThereAdmin = function (callback) {
+		connection.query({
+			sql: 'select id from token where parent is null',
+			values: []
+		}, function (error, resluts, fields) {
+			if (!error) {
+				if (resluts.length > 0) {
+					if (callback) callback(true);
+				} else {
+					if (callback) callback(false);
+				}
+			}
+		});
+	}
+
+	that.isAdmin = function (token, callback) {
+		connection.query({
+			sql: 'select parent from token where id = ?',
+			values: [token.getId()]
+		}, function (error, resluts, fields) {
+			if (!error) {
+				if (resluts.length > 0) {
+					if (resluts.parent == null) {
+						if (callback) callback(true);
+					} else {
+						if (callback) callback(false);
+					}
+				} else {
+					if (callback) callback(false);
+				}
+			}
+		});
+	}
+
 	that.getProfilesForToken = function (token, callback) {
 		connection.query({
 			sql: 'select id from profile where token = ?',
@@ -266,6 +300,64 @@ module.exports = function(sqlAddress, database, user) {
 				}
 			}
 		});
+	}
+
+	that.getMatrixsForProfile = function(profile, callback) {
+		connection.query({
+			sql: 'select p.id as id, t.parent as parent, t.id as tokenid from profile p left join token t on p.token = t.id where p.id = ?',
+			values: [profile.getId()]
+		}, function (error, results, fields) {
+			console.log(error);
+			if (!error) {
+				if (results.length > 0) {
+					if (results[0].parent === null) {
+						connection.query({
+							sql: 'select id from matrix'
+						}, function (error, results, fields) {
+							if (!error) {
+								var matrixs = [];
+								results.forEach(function (row) {
+									matrixs.push(new Matrix(row.id, that));
+								});
+								if (callback) callback(matrixs);
+							}
+						});
+					} else {
+						connection.query({
+							sql: 'select m.id as id from matrix m left join matrix_rights mr on mr.matrix = m.id where mr.token = ?',
+							values: [results[0].tokenid]
+						}, function (error, results, fields) {
+							if (!error) {
+								var matrixs = [];
+								results.forEach(function(row) {
+									matrixs.push(new Matrix(row.id, that));
+								});
+								if (callback) callback(matrixs);
+							}
+						});
+					}
+				}
+			}
+		});
+	}
+
+	that.checkPermissionsForVideoConnection = function (profile, con, cpu, callback) {
+		connection.query({
+			sql: 'select p.id as id, t.parent as parent, t.id as tokenid from profile p left join token t on p.token = t.id where p.id = ?',
+			values: [profile.getId()]
+		}, function (error, results, fields) {
+			console.log(error);
+			if (!error) {
+				if (results.length > 0) {
+					if (results[0].parent === null) {
+						if (callback) callback(true);
+					} else {
+						
+					}
+				}
+
+			}
+		});		
 	}
 
 	that.addPortToMatrix = function (port) {
