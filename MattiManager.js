@@ -18,29 +18,43 @@ module.exports = function(sqlAddress, database, user) {
 
 	that.createMatrix = function (ip, port, conPorts, cpuPorts, callback) {
 		connection.query({
-			sql: 'insert into matrix(ip, port) values(?, ?)',
+			sql: 'select id from matrix where ip = ? and port = ?',
 			values: [ip, port]
 		}, function (error, results, fields) {
 			if (!error) {
-				var matrix = new Matrix(results.insertId, that);
-				for (var i = 0; i < conPorts; i++) {
-					that.createConPort(matrix, i+1);
+				if (results.length === 0) {
+					connection.query({
+						sql: 'insert into matrix(ip, port) values(?, ?)',
+						values: [ip, port]
+					}, function (error, results, fields) {
+						if (!error) {
+							var matrix = new Matrix(results.insertId, that);
+							for (var i = 0; i < conPorts; i++) {
+								that.createConPort(matrix, i+1);
+							}
+							for (var i = 0; i < cpuPorts; i++) {
+								that.createCpuPort(matrix, i+1);
+							}
+							if (callback) callback(matrix);
+						}
+					});
+				} else {
+					if (callback) callback(new Matrix(results[0].id, that));
 				}
-				for (var i = 0; i < cpuPorts; i++) {
-					that.createCpuPort(matrix, i+1);
-				}
-				if (callback) callback(matrix);
 			}
 		});
+
 	}
 
 	that.getIpAndPortForMatrix = function (matrix, callback) {
-		console.log(matrix);
+		console.log(matrix.getId().id);
 		connection.query({
 			sql: 'select ip, port from matrix where id = ?',
 			values: [matrix.getId()]
 		}, function (error, results, fields) {
+			console.log(error);
 			if (!error) {
+				console.log(results);
 				if (results.length > 0) {
 					callback(results[0].ip, results[0].port);
 				}
