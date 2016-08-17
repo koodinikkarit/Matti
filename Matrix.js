@@ -66,7 +66,7 @@ module.exports = function(id, manager) {
 		});
 	});
 
-	that.setVideoConnection = function (cpuPort, conPort) {
+	that.makeVideoConnection = function (cpuPort, conPort) {
 		console.log(cpuPort);
 		if (client.destroyed) {
 			manager.getIpAndPortForMatrix(that, function (ip, port) {
@@ -80,7 +80,7 @@ module.exports = function(id, manager) {
 		
 	}
 
-	that.setKwmConnection = function (cpu) {
+	that.makeKwmConnection = function (cpu) {
 
 	}
 
