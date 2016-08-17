@@ -50,7 +50,7 @@ module.exports = function(sqlAddress, database, user) {
 
 	that.createConPort = function (matrix, n, callback) {
 		connection.query({
-			sql: 'select COUNT(id) as A from con_ports where matri_id = ? and port_number = ?',
+			sql: 'select COUNT(id) as A from con_ports where matrix_id = ? and port_number = ?',
 			values: [matrix.getId(), n]
 		}, function (error, results, fields) {
 			if (!error) {
@@ -72,7 +72,7 @@ module.exports = function(sqlAddress, database, user) {
 
 	that.createCpuPort = function (matrix, n, callback) {
 		connection.query({
-			sql: 'select COUNT(id) as A from cpu_ports where matri_id = ? and port_number = ?',
+			sql: 'select COUNT(id) as A from cpu_ports where matrix_id = ? and port_number = ?',
 			values: [matrix.getId(), n]
 		}, function (error, results, fields) {
 			if (!error) {
