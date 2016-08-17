@@ -152,7 +152,7 @@ module.exports = function(sqlAddress, database, user) {
 
 	}
 
-	that.createToken = function (token_str, callback) {
+	that.createToken = function (token_str, parentToken, callback) {
 		connection.query({
 			sql: 'select id from token where token_str = ?',
 			values: [token_str]		
@@ -160,10 +160,41 @@ module.exports = function(sqlAddress, database, user) {
 			console.log(error);
 			if (!error) {
 				if (results.length === 0) {
-					connection.query( {
+					connection.query({
+						sql: 'select id from token where id = ?',
+						values: [parentToken.getId()]
+					}, function (error,results, fields) {
+						if (!error) {
+							if (results.length > 0) {
+								connection.query( {
+									sql: 'insert into token(token_str, parent) values(?, ?)',
+									values: [token_str, parentToken.getId()]
+								}, function (error, results, fields) {
+									if (!error) {
+										if (callback) callback(new Token(results.insertId, that));
+									}
+								});
+							}
+						}
+					});
+				} else {
+					if (callback) callback(new Token(results[0].id, that));
+				}
+			}
+		});
+	}
+
+	that.createAdmin = function (token_str, callback) {
+		connection.query({
+			sql: 'select id from token where parent is null',
+			//values: []
+		}, function (error, results, fields) {
+			if (!error) {
+				if (results.length == 0) {
+					connection.query({
 						sql: 'insert into token(token_str) values(?)',
 						values: [token_str]
-					}, function (error, results, fields) {
+					}, function(error, results, fields) {
 						if (!error) {
 							if (callback) callback(new Token(results.insertId, that));
 						}
