@@ -1,0 +1,3 @@
+[submodule "matti_service"]
+	path = matti_service
+	url = https://github.com/koodinikkarit/matti_service.git
