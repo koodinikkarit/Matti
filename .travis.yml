@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  "7"
+install:
+  - docker login -u $DOCKER_ID_USER -p $DOCKER_USER_PASSWORD
+  - export TAG=${TRAVIS_TAG:-latest}
+  - docker build -t $DOCKER_ID_USER/matti .
+  - docker tag $DOCKER_ID_USER/matti $DOCKER_ID_USER/matti:$TAG
+after_success:
+  - docker push $DOCKER_ID_USER/matti
