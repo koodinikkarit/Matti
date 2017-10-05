@@ -1,9 +1,39 @@
 {
-  "name": "matti.js",
-  "version": "0.0.0",
-  "private": true,
-  "dependencies": {
-    "grpc": "1.1.2",
-    "immutable": "4.0.0-rc.1"
-  }
+	"name": "matti.js",
+	"version": "0.0.0",
+	"author": {
+		"name": "Jaska"
+	},
+	"scripts": {
+		"start": "babel-node ./src/app.js",
+		"watch": "babel-watch ./src/app.js",
+		"build": "babel src --out-dir dist/",
+		"start-after-build": "cd dist && node app.js"
+	},
+	"dependencies": {
+		"sequelize": "^4.13.5",
+		"mysql": "^2.14.1",
+		"grpc": "^1.6.0",
+		"google-protobuf": "^3.4.0",
+		"protobufjs": "^6.8.0"
+	},
+	"devDependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-preset-es2016": "^6.24.1",
+		"babel-preset-stage-1": "^6.24.1",
+		"babel-loader": "^7.1.2",
+		"babel-eslint": "^8.0.1",
+		"babel-jest": "^21.2.0",
+		"babel-preset-flow": "^6.23.0",
+		"babel-watch": "2.0.7",
+		"eslint": "4.8.0",
+		"eslint-plugin-flowtype": "2.38.0",
+		"eslint-plugin-import": "2.7.0",
+		"eslint-plugin-jest": "21.2.0",
+		"eslint-plugin-react": "7.4.0",
+		"jest": "^21.2.1",
+		"rimraf": "^2.6.2",
+		"grunt": "^1.0.1",
+		"grunt-bump": "^0.8.0"
+	}
 }
